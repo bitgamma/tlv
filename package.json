@@ -1,0 +1,25 @@
+{
+  "name": "tlv",
+  "version": "0.0.1",
+  "homepage": "https://github.com/briksoftware/tlv",
+  "description": "A TLV encoder and decoder. At the moment only BER-TLV is supported",
+  "author": "Ksenia Lebedeva",
+  "main": "./lib/tlv.js",
+  "engines": {
+    ">= 0.10"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/briksoftware/tlv"
+  },
+  "keywords": [
+    "tlv",
+    "bertlv"
+  ],
+  "bugs": {
+    "url": "https://github.com/briksoftware/tlv/issues"
+  },
+}
