@@ -5,11 +5,8 @@
   "description": "A TLV encoder and decoder. At the moment only BER-TLV is supported",
   "author": "Ksenia Lebedeva",
   "main": "./lib/tlv.js",
-  "engines": {
-    ">= 0.10"
-  },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha ./test/tlv.js"
   },
   "repository": {
     "type": "git",
@@ -22,4 +19,11 @@
   "bugs": {
     "url": "https://github.com/briksoftware/tlv/issues"
   },
+  "devDependencies": {
+    "mocha": "1.18.x",
+    "chai": "1.9.x"
+  },
+  "engines": {
+    "node": ">= 0.10"
+  }
 }
