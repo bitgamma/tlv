@@ -186,14 +186,15 @@ describe('TLV', function() {
     });
     
     it('should return a TLV object when provided a buffer with constructed tlvs with 2 levels of nesting', function() {
-      var res = tlv.parse(new Buffer([0xE1, 0x0A, 0xA0, 0x04, 0x82, 0x02, 0xCA, 0xFE, 0x83, 0x02, 0xBB, 0xBC]));
+      var res = tlv.parse(new Buffer([0xE1, 0x0C, 0xA0, 0x04, 0x82, 0x02, 0xCA, 0xFE, 0x00, 0x00, 0x83, 0x02, 0xBB, 0xBC]));
       
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
-      res.encodedLength.should.equal(12);
+      res.encodedLength.should.equal(14);
       res.value.should.deep.equal([
         new TLV(0xA0, [new TLV(0x82, new Buffer([0xCA, 0xFE]), 4)], 6),
+        new TLV(0x00, new Buffer(0), 2),
         new TLV(0x83, new Buffer([0xBB, 0xBC]), 4)
       ]);
     });
@@ -231,6 +232,24 @@ describe('TLV', function() {
     it('should throw an exception when provided a buffer with primitive tag on 5 bytes.', function() {
       var buf = new Buffer([0x1F, 0x85, 0xA2, 0x81, 0x01, 0x00]);
       (function(){ tlv.parse(buf); }).should.throw(RangeError);
+    });
+    
+    it('should return a TLV object when provided a buffer with constructed tag and indefinite length and spurious data after the end.', function() {
+      var res = tlv.parse(new Buffer([0xE1, 0x80, 0x81, 0x02, 0x00, 0x00, 0x82, 0x02, 0xBB, 0xBC, 0x00, 0x00, 0xAA, 0xFF]));
+      
+      res.should.be.an.instanceof(TLV);
+      res.tag.should.equal(0xE1);
+      res.constructed.should.equal(true);
+      res.encodedLength.should.equal(12);
+      res.value.should.deep.equal([
+        new TLV(0x81, new Buffer([0x00, 0x00]), 4),
+        new TLV(0x82, new Buffer([0xBB, 0xBC]), 4)
+      ]);
+    });
+    
+    it('should throw an exception when provided a buffer with primitive tag and indefinite length.', function() {
+      var buf = new Buffer([0xC0, 0x80, 0x81, 0x01, 0x00, 0x00, 0x00]);
+      (function(){ tlv.parse(buf); }).should.throw(Error);
     });
   });
 });
