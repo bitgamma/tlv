@@ -6,7 +6,7 @@
   "author": "Ksenia Lebedeva",
   "main": "./lib/tlv.js",
   "scripts": {
-    "test": "mocha ./test/tlv.js"
+    "test": "mocha -R spec ./test/tlv.js"
   },
   "repository": {
     "type": "git",
