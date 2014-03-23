@@ -35,6 +35,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(6);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
       buf[2] = 0xAA;
@@ -47,6 +48,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(2);
       res.value.should.deep.equal(new Buffer([]));
     });
@@ -65,6 +67,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(buf.length);
       res.value.should.deep.equal(buf.slice(2, buf.length));
     });
@@ -84,6 +87,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xC4);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(buf.length);
       res.value.should.deep.equal(buf.slice(3, buf.length));
     });
@@ -104,6 +108,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal((buf.length - 5));
       res.value.should.deep.equal(buf.slice(4, (buf.length - 5)));
     });
@@ -125,6 +130,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x12);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(buf.length - 5);
       res.value.should.deep.equal(buf.slice(5, (buf.length - 5)));
     });
@@ -145,6 +151,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(buf.length - 5);
       res.value.should.deep.equal(buf.slice(6, (buf.length - 5)));
     });
@@ -168,6 +175,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(10);
       res.value.should.deep.equal([
         new TLV(0x80, new Buffer([0xBA, 0xBE]), 4),
@@ -181,6 +189,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(2);
       res.value.should.deep.equal([]);
     });
@@ -191,6 +200,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(14);
       res.value.should.deep.equal([
         new TLV(0xA0, [new TLV(0x82, new Buffer([0xCA, 0xFE]), 4)], 6),
@@ -205,6 +215,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x9F70);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(8);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
     });
@@ -215,6 +226,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x9F8522);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(9);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
     });
@@ -225,6 +237,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x1F85A201);
       res.constructed.should.equal(false);
+      res.indefiniteLength.should.equal(false);
       res.originalLength.should.equal(10);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
     });
@@ -240,6 +253,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
+      res.indefiniteLength.should.equal(true);
       res.originalLength.should.equal(12);
       res.value.should.deep.equal([
         new TLV(0x81, new Buffer([0x00, 0x00]), 4),
@@ -293,6 +307,66 @@ describe('TLV', function() {
       var tlv = new TLV(0x3F12, [tlvChild1, tlvChild2]);
       
       tlv.byteLength.should.equal(0x8B);
+    });
+    
+    it('should return the length of an encoded TLV object with constructed tag and indefinite length', function() {
+      var buf = new Buffer(0x80);
+
+      var tlvChild1 = new TLV(0x9F70, buf, true);
+      var tlvChild2 = new TLV(0x82, new Buffer(1));
+      var tlv = new TLV(0x3F12, [tlvChild1, tlvChild2]);
+      
+      tlv.byteLength.should.equal(0x8C);
+    });
+  });
+  
+  describe('#encode', function() {
+    it('should encode the TLV object in the given Buffer. The TLV is primitive with tag on 1 byte and length on 1 byte', function() {
+      var outputBuf = new Buffer(6);
+      var buf = new Buffer([0xCA, 0xFE, 0xBA, 0xBE]);
+      var tlv = new TLV(0x80, buf);
+      var returnedBuf = tlv.encode(outputBuf);
+      returnedBuf.should.equal(outputBuf);
+      returnedBuf.should.deep.equal(new Buffer([0x80, 0x04, 0xCA, 0xFE, 0xBA, 0xBE]));
+    });
+    
+    it('should return a Buffer containing the encoded TLV object. The TLV is primitive with tag on 1 byte and length on 1 byte', function() {
+      var tlvHeader = new Buffer([0x80, 0x7F]);
+      var buf = new Buffer(0x7F);
+      var tlv = new TLV(0x80, buf);
+      tlv.encode().should.deep.equal(Buffer.concat([tlvHeader, buf]));
+    });    
+    
+    it('should return a Buffer containing the encoded TLV object. The TLV is constructed with tag on 1 byte and length on 1 byte', function() {
+      var buf = new Buffer([0xBA, 0xBE]);
+      var tlv = new TLV(0xA0, [new TLV(0xCA, buf)]);
+      tlv.encode().should.deep.equal(new Buffer([0xA0, 0x04, 0xCA, 0x02, 0xBA, 0xBE]));
+    });
+    
+    it('should return a Buffer containing the encoded TLV object. The TLV is primitive with tag on 2 bytes and length on 1 byte', function() {
+      var buf = new Buffer([0xCA, 0xFE, 0xBA, 0xBE]);
+      var tlv = new TLV(0x9F70, buf);
+      tlv.encode().should.deep.equal(new Buffer([0x9F, 0x70, 0x04, 0xCA, 0xFE, 0xBA, 0xBE]));
+    });
+    
+    it('should return a Buffer containing the encoded TLV object. The TLV is primitive with tag on 3 bytes and length on 2 bytes', function() {
+      var tlvHeader = new Buffer([0x9F, 0x81, 0x20, 0x81, 0x80]);
+      var buf = new Buffer(0x80);
+      var tlv = new TLV(0x9F8120, buf);
+      tlv.encode().should.deep.equal(Buffer.concat([tlvHeader, buf]));
+    });
+    
+    it('should return a Buffer containing the encoded TLV object. The TLV is primitive with tag on 1 byte and length on 3 bytes', function() {
+      var tlvHeader = new Buffer([0xC0, 0x82, 0x01, 0x00]);
+      var buf = new Buffer(0x100);
+      var tlv = new TLV(0xC0, buf);
+      tlv.encode().should.deep.equal(Buffer.concat([tlvHeader, buf]));
+    });
+    
+    it('should return a Buffer containing the encoded TLV object. The TLV is constructed with tag on 1 byte and indefinite length', function() {
+      var buf = new Buffer([0xBA, 0xBE]);
+      var tlv = new TLV(0xA0, [new TLV(0xCA, buf)], true);
+      tlv.encode().should.deep.equal(new Buffer([0xA0, 0x80, 0xCA, 0x02, 0xBA, 0xBE, 0x00, 0x00]));
     });
   });
 });
