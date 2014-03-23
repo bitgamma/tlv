@@ -1,3 +1,8 @@
 language: node_js
 node_js:
- - "0.10"
+- '0.10'
+deploy:
+  api_key:
+    secure: OFZfcmM+jDyCOhwj7ft3Ocy7dlr1crThYYpS29VGfgZFZJjXI5SpP2RPSNip38Z3dveOh4HfMmQ6dK90avaRPMl0krdG6l36H+cynsw74jwxckfaoUPVmdKzT9/sanIUu6+CE+Jj7xJfG6hqqBrHl8UD754tYaO5pG94TFT8rLM=
+  email: ksenia@briksoftware.com
+  provider: npm
