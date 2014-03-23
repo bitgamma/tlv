@@ -252,4 +252,47 @@ describe('TLV', function() {
       (function(){ tlv.parse(buf); }).should.throw(Error);
     });
   });
+  
+  describe('#byteLength', function() {
+    it('should return the length of an encoded TLV object with primitive tag on 1 byte and length 7F', function() {
+      var buf = new Buffer(0x7F);
+      for (i = 0; i < buf.length; i++) {
+        buf[i] = i;
+      }
+      
+      var tlv = new TLV(0xC2, buf);
+      tlv.byteLength.should.equal(129);
+    });
+    
+    it('should return the length of an encoded TLV object with primitive tag on 2 bytes and length 0', function() {
+      var buf = new Buffer(0);
+      
+      var tlv = new TLV(0x9FC2, buf);
+      tlv.byteLength.should.equal(3);
+    }); 
+    
+    it('should return the length of an encoded TLV object with primitive tag on 3 bytes and length on 3 bytes', function() {
+      var buf = new Buffer(0x100);
+         
+      var tlv = new TLV(0x9FC2C2, buf);
+      tlv.byteLength.should.equal(0x106);
+    }); 
+    
+    it('should return the length of an encoded TLV object with primitive tag on 4 bytes and length on 2 bytes', function() {
+      var buf = new Buffer(0x80);
+
+      var tlv = new TLV(0x9FC2C222, buf);
+      tlv.byteLength.should.equal(0x86);
+    }); 
+    
+    it('should return the length of an encoded TLV object with constructed tag', function() {
+      var buf = new Buffer(0x80);
+
+      var tlvChild1 = new TLV(0x9F70, buf);
+      var tlvChild2 = new TLV(0x82, new Buffer(1));
+      var tlv = new TLV(0x3F12, [tlvChild1, tlvChild2]);
+      
+      tlv.byteLength.should.equal(0x8B);
+    });
+  });
 });
