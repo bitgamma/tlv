@@ -35,7 +35,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(6);
+      res.originalLength.should.equal(6);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
       buf[2] = 0xAA;
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
@@ -47,7 +47,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(2);
+      res.originalLength.should.equal(2);
       res.value.should.deep.equal(new Buffer([]));
     });
     
@@ -65,7 +65,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(buf.length);
+      res.originalLength.should.equal(buf.length);
       res.value.should.deep.equal(buf.slice(2, buf.length));
     });
     
@@ -84,7 +84,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xC4);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(buf.length);
+      res.originalLength.should.equal(buf.length);
       res.value.should.deep.equal(buf.slice(3, buf.length));
     });
     
@@ -104,7 +104,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal((buf.length - 5));
+      res.originalLength.should.equal((buf.length - 5));
       res.value.should.deep.equal(buf.slice(4, (buf.length - 5)));
     });
     
@@ -125,7 +125,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x12);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(buf.length - 5);
+      res.originalLength.should.equal(buf.length - 5);
       res.value.should.deep.equal(buf.slice(5, (buf.length - 5)));
     });
     
@@ -145,7 +145,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x80);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(buf.length - 5);
+      res.originalLength.should.equal(buf.length - 5);
       res.value.should.deep.equal(buf.slice(6, (buf.length - 5)));
     });
     
@@ -168,7 +168,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
-      res.encodedLength.should.equal(10);
+      res.originalLength.should.equal(10);
       res.value.should.deep.equal([
         new TLV(0x80, new Buffer([0xBA, 0xBE]), 4),
         new TLV(0x82, new Buffer([0xBB, 0xBC]), 4)
@@ -181,7 +181,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
-      res.encodedLength.should.equal(2);
+      res.originalLength.should.equal(2);
       res.value.should.deep.equal([]);
     });
     
@@ -191,7 +191,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
-      res.encodedLength.should.equal(14);
+      res.originalLength.should.equal(14);
       res.value.should.deep.equal([
         new TLV(0xA0, [new TLV(0x82, new Buffer([0xCA, 0xFE]), 4)], 6),
         new TLV(0x00, new Buffer(0), 2),
@@ -205,7 +205,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x9F70);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(8);
+      res.originalLength.should.equal(8);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
     });
     
@@ -215,7 +215,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x9F8522);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(9);
+      res.originalLength.should.equal(9);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
     });
     
@@ -225,7 +225,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0x1F85A201);
       res.constructed.should.equal(false);
-      res.encodedLength.should.equal(10);
+      res.originalLength.should.equal(10);
       res.value.should.deep.equal(new Buffer([0xCA, 0xFE, 0xBA, 0xBE]));
     });
     
@@ -240,7 +240,7 @@ describe('TLV', function() {
       res.should.be.an.instanceof(TLV);
       res.tag.should.equal(0xE1);
       res.constructed.should.equal(true);
-      res.encodedLength.should.equal(12);
+      res.originalLength.should.equal(12);
       res.value.should.deep.equal([
         new TLV(0x81, new Buffer([0x00, 0x00]), 4),
         new TLV(0x82, new Buffer([0xBB, 0xBC]), 4)
