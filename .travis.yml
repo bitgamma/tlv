@@ -1,10 +1,11 @@
 language: node_js
 node_js:
-  - '0.10'
+- '0.10'
 deploy:
-  api_key:
-    secure: OFZfcmM+jDyCOhwj7ft3Ocy7dlr1crThYYpS29VGfgZFZJjXI5SpP2RPSNip38Z3dveOh4HfMmQ6dK90avaRPMl0krdG6l36H+cynsw74jwxckfaoUPVmdKzT9/sanIUu6+CE+Jj7xJfG6hqqBrHl8UD754tYaO5pG94TFT8rLM=
-  email: ksenia@briksoftware.com
   provider: npm
+  email: ksenia@briksoftware.com
+  api_key:
+    secure: au2+dpJXawEDggz18XDxv1plC0QaQAMvagt+Tmn32oEvDf9BOQtfb7Vn1kTvTi/4TB7SKQR0Pnx7w1pMISaREgUuWCbeCkwa2+2fZtqDbBrNi5kHjwslqCk8Mp3/pgUM+ESIqjPdeItb+x79ccQ5lYQluRzp4yWJK05/jUqrCcA=
   on:
     tags: true
+    repo: briksoftware/tlv
