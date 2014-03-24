@@ -1,6 +1,6 @@
 {
   "name": "tlv",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/briksoftware/tlv",
   "description": "A TLV encoder and decoder. At the moment only BER-TLV is supported",
   "author": "Ksenia Lebedeva",

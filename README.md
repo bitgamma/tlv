@@ -24,16 +24,16 @@ var result = tlv.parse(buf);
 
 The ```result``` variable holds reference to a TLV object. The TLV object has the following properties:
 
-* tag => a number representing the tag of the TLV
-* value => either a Buffer holding the value of the primitive TLV or an array of TLV object in case of constructed TLVs
-* constructed => boolean, indicates if the TLV is constructed or primitive
-* indefiniteLength => boolean, indicates if the TLV was encoded with indefinite length
-* originalLength => the original length in bytes of the parsed TLV
-* byteLength => the length of the encoded TLV. This may be different from originalLength, since this library always guarantees the shortest encoding but is able to parse TLVs encoded with suboptimal encoders.
+* ```tag``` => a number representing the tag of the TLV
+* ```value``` => either a Buffer holding the value of the primitive TLV or an array of TLV object in case of constructed TLVs
+* ```constructed``` => boolean, indicates if the TLV is constructed or primitive
+* ```indefiniteLength``` => boolean, indicates if the TLV was encoded with indefinite length
+* ```originalLength``` => the original length in bytes of the parsed TLV
+* ```byteLength``` => the length of the encoded TLV. This may be different from originalLength, since this library always guarantees the shortest encoding but is able to parse TLVs encoded with suboptimal encoders.
 
 Encoding can be done using the TLV's object only method
 
-* encode([buffer]) => encodes the TLV object (recursively) in the given instance of Buffer. If the ```buffer``` object is not given a new one will be created
+* ```encode([buffer])``` => encodes the TLV object (recursively) in the given instance of Buffer. If the ```buffer``` object is not given a new one will be created
 
 An example of TLV creation and encoding
 
