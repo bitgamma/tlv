@@ -23,9 +23,11 @@
 */
 
 describe('TLV', function() {
-  var chai = require('chai').should();
+  var chai = require('chai');
+  var expect = chai.expect;
   var tlv = require('../lib/tlv');
   var TLV = tlv.TLV;
+  chai.should();
   
   describe('#parse', function() {
     it('should return a TLV object when provided a buffer with primitive tag on 1 byte and length on 1 byte.', function() {
@@ -367,6 +369,84 @@ describe('TLV', function() {
       var buf = new Buffer([0xBA, 0xBE]);
       var tlv = new TLV(0xA0, [new TLV(0xCA, buf)], true);
       tlv.encode().should.deep.equal(new Buffer([0xA0, 0x80, 0xCA, 0x02, 0xBA, 0xBE, 0x00, 0x00]));
+    });
+  });
+  
+  describe('#getFirstChild', function() {
+    it('should return the first child with the given tag', function() {
+      var parentTlv = new TLV(0xE1, [
+        new TLV(0x80, new Buffer([0xfa, 0xfb])),
+        new TLV(0x81, new Buffer([0xaa, 0xab])),
+        new TLV(0x82, new Buffer([0xda, 0xdb])),
+        new TLV(0x81, new Buffer([0xff, 0xff])),
+        new TLV(0x83, new Buffer([0xdf, 0xaf])),
+      ]);
+      
+      var child = parentTlv.getFirstChild(0x80);
+      child.tag.should.equal(0x80);
+      child.value.should.deep.equal(new Buffer([0xfa, 0xfb]));
+      
+      child = parentTlv.getFirstChild(0x81);
+      child.tag.should.equal(0x81);
+      child.value.should.deep.equal(new Buffer([0xaa, 0xab]));
+      
+      child = parentTlv.getFirstChild(0x82);
+      child.tag.should.equal(0x82);
+      child.value.should.deep.equal(new Buffer([0xda, 0xdb]));
+      
+      child = parentTlv.getFirstChild(0x83);
+      child.tag.should.equal(0x83);
+      child.value.should.deep.equal(new Buffer([0xdf, 0xaf]));
+    });
+    
+    it('should return null if no child with the given tag is found', function() {
+      var parentTlv = new TLV(0xE1, [
+        new TLV(0x80, new Buffer([0xfa, 0xfb])),
+        new TLV(0x81, new Buffer([0xaa, 0xab])),
+        new TLV(0x82, new Buffer([0xda, 0xdb])),
+        new TLV(0x81, new Buffer([0xff, 0xff])),
+        new TLV(0x83, new Buffer([0xdf, 0xaf])),
+      ]);
+      
+      expect(parentTlv.getFirstChild(0x84)).to.be.null;
+    });
+  });
+  
+  describe('#getChildren', function() {
+    it('should return all children with the given tag', function() {
+      var parentTlv = new TLV(0xE1, [
+        new TLV(0x80, new Buffer([0xfa, 0xfb])),
+        new TLV(0x81, new Buffer([0xaa, 0xab])),
+        new TLV(0x81, new Buffer([0xa1, 0xa2])),
+        new TLV(0x82, new Buffer([0xda, 0xdb])),
+        new TLV(0x81, new Buffer([0xff, 0xff])),
+        new TLV(0x83, new Buffer([0xdf, 0xaf])),
+      ]);
+      
+      var children = parentTlv.getChildren(0x80);
+      children.should.deep.equal([parentTlv.value[0]]);
+      
+      children = parentTlv.getChildren(0x81);
+      children.should.deep.equal([parentTlv.value[1], parentTlv.value[2], parentTlv.value[4]]);
+      
+      children = parentTlv.getChildren(0x82);
+      children.should.deep.equal([parentTlv.value[3]]);
+      
+      children = parentTlv.getChildren(0x83);
+      children.should.deep.equal([parentTlv.value[5]]);
+    });
+    
+    it('should return an empty array if no children with the given tag are found', function() {
+      var parentTlv = new TLV(0xE1, [
+        new TLV(0x80, new Buffer([0xfa, 0xfb])),
+        new TLV(0x81, new Buffer([0xaa, 0xab])),
+        new TLV(0x81, new Buffer([0xa1, 0xa2])),
+        new TLV(0x82, new Buffer([0xda, 0xdb])),
+        new TLV(0x81, new Buffer([0xff, 0xff])),
+        new TLV(0x83, new Buffer([0xdf, 0xaf])),
+      ]);
+      
+      parentTlv.getChildren(0x84).should.deep.equal([]);
     });
   });
 });
