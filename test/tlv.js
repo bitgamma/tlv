@@ -449,4 +449,35 @@ describe('TLV', function() {
       parentTlv.getChildren(0x84).should.deep.equal([]);
     });
   });
+  
+  describe('#parseTag', function() {
+    it('parses a tag and returns it as an object with tag, length and constructed properties', function() {
+      var buf = new Buffer([0x9f, 0x70]);
+      var tag = tlv.parseTag(buf);
+      tag.tag.should.equal(0x9f70);
+      tag.length.should.equal(2);
+      tag.constructed.should.equal(false);
+    });
+  });
+  
+  describe('#parseAllTags', function() {
+    it('parses the entire buffer as TLV tags and returns an array of integers with the tags', function() {
+      var buf = new Buffer([0x9f, 0x70, 0x80, 0xA0, 0x9f, 0x80, 0x7f, 0x81]);
+      var tag = tlv.parseAllTags(buf);
+      
+      tag[0].should.equal(0x9f70);   
+      tag[1].should.equal(0x80);
+      tag[2].should.equal(0xA0);
+      tag[3].should.equal(0x9f807f);
+      tag[4].should.equal(0x81);
+    });
+  });
+  
+  describe('#encodeTags', function() {
+    it('returns a new buffer containing the encoded form the given array of tags', function() {
+      var tags = [0x9f70, 0x80, 0xA0, 0x9f807f];
+      var buf = tlv.encodeTags(tags);
+      buf.should.deep.equal(new Buffer([0x9f, 0x70, 0x80, 0xA0, 0x9f, 0x80, 0x7f]));
+    });
+  });
 });
