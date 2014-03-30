@@ -31,7 +31,7 @@ The ```result``` variable holds reference to a TLV object. The TLV object has th
 * ```originalLength``` => the original length in bytes of the parsed TLV
 * ```byteLength``` => the length of the encoded TLV. This may be different from originalLength, since this library always guarantees the shortest encoding but is able to parse TLVs encoded with suboptimal encoders.
 
-Encoding can be done using the TLV's object only method
+Encoding can be done using the TLV's encode method
 
 * ```encode([buffer])``` => encodes the TLV object (recursively) in the given instance of Buffer. If the ```buffer``` object is not given a new one will be created
 
@@ -44,6 +44,22 @@ var encodedTLV = aTLV.encode();
 ```
 
 The resulting ```encodedTLV``` will contain the value ```[0x80, 0x02, 0xCA, 0xFE]```.
+
+Additionally, there are methods to parse and encode only the tags of a TLV. This is useful for expressing a sequence of tags, for example
+in a list of supported, or requested TLV objects.
+
+These methods are part of the tlv module, not of the TLV object and they are:
+
+* ```parseTag(buffer)``` => parses the first bytes of the buffer and returns them as an object containing the tag itself, its length in bytes and whether it refers to a constructed or primitive TLV.
+* ```parseAllTags(buffer)``` => parses the entire buffer as a sequence of TLV-encoded tags and returns the values in an array.
+* ```encodeTags(array)``` => takes an array of TLV tags and encodes them in a new Buffer object which is then returned.
+
+### Searching in TLVs
+
+Since TLV objects can be constructed, that is be composed as a sequence of child TLV objects, search capabilities by tag are provided. Obviously, these methods only apply to constructed TLVs and do not make sense on primitive ones. These methods are part of the TLV object:
+
+* ```getFirstChild(tag)``` => returns the first child object with the given tag, or null if none is found
+* ```getChildren(tag)``` => returns an array containing all children with the given tag, or an empty array if none are found
 
 ## License
 
