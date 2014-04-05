@@ -539,4 +539,54 @@ describe('TLV', function() {
       intTlv.getIntValue().should.equal(1588444911);
     });
   });
+  
+  describe('#setIntValue', function() {
+    it('should write a big endian integer in a 1 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer(1));
+      intTlv.setIntValue(255);
+      intTlv.value.should.deep.equal(new Buffer([0xff]));
+      
+      intTlv.setIntValue(-1);
+      intTlv.value.should.deep.equal(new Buffer([0xff]));
+      
+      intTlv.setIntValue(127);
+      intTlv.value.should.deep.equal(new Buffer([0x7f]));
+    });
+    
+    it('should write a big endian integer in a 2 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer(2));
+      intTlv.setIntValue(65535);
+      intTlv.value.should.deep.equal(new Buffer([0xff, 0xff]));
+      
+      intTlv.setIntValue(-1);
+      intTlv.value.should.deep.equal(new Buffer([0xff, 0xff]));
+      
+      intTlv.setIntValue(32767);
+      intTlv.value.should.deep.equal(new Buffer([0x7f, 0xff]));
+    });
+    
+    it('should write a big endian integer in a 3 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer(3));
+      intTlv.setIntValue(16777215);
+      intTlv.value.should.deep.equal(new Buffer([0xff, 0xff, 0xff]));
+      
+      intTlv.setIntValue(-1);
+      intTlv.value.should.deep.equal(new Buffer([0xff, 0xff, 0xff]));
+      
+      intTlv.setIntValue(8388607);
+      intTlv.value.should.deep.equal(new Buffer([0x7f, 0xff, 0xff]));
+    });
+    
+    it('should write a big endian integer in a 4 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer(4));
+      intTlv.setIntValue(4294967295);
+      intTlv.value.should.deep.equal(new Buffer([0xff, 0xff, 0xff, 0xff]));
+      
+      intTlv.setIntValue(-1);
+      intTlv.value.should.deep.equal(new Buffer([0xff, 0xff, 0xff, 0xff]));
+      
+      intTlv.setIntValue(2147483647);
+      intTlv.value.should.deep.equal(new Buffer([0x7f, 0xff, 0xff, 0xff]));
+    });
+  });
 });
