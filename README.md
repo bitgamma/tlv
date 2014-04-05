@@ -61,6 +61,12 @@ Since TLV objects can be constructed, that is be composed as a sequence of child
 * ```getFirstChild(tag)``` => returns the first child object with the given tag, or null if none is found
 * ```getChildren(tag)``` => returns an array containing all children with the given tag, or an empty array if none are found
 
+### Getting/Setting integer values
+
+If the value in the TLV is an integer, you can get it with either ```getUIntValue()``` or ```getIntValue()``` to read the value as either a signed or unsigned big endian integer. The length of the value in this case must be between 1 and 4. Little endian values are not supported.
+
+Encoding a number in the value of the TLV is just as easy. Using the ```setIntValue(number)``` method, the given number will be encoded in the TLV's value. This will overwrite data currently in the buffer. If the length of the buffer is more than 4 this method won't work.
+
 ## License
 
 MIT License. Copyright 2014 Ksenia Lebedeva.
