@@ -451,7 +451,7 @@ describe('TLV', function() {
   });
   
   describe('#parseTag', function() {
-    it('parses a tag and returns it as an object with tag, length and constructed properties', function() {
+    it('should parse a tag and returns it as an object with tag, length and constructed properties', function() {
       var buf = new Buffer([0x9f, 0x70]);
       var tag = tlv.parseTag(buf);
       tag.tag.should.equal(0x9f70);
@@ -461,7 +461,7 @@ describe('TLV', function() {
   });
   
   describe('#parseAllTags', function() {
-    it('parses the entire buffer as TLV tags and returns an array of integers with the tags', function() {
+    it('should parse the entire buffer as TLV tags and returns an array of integers with the tags', function() {
       var buf = new Buffer([0x9f, 0x70, 0x80, 0xA0, 0x9f, 0x80, 0x7f, 0x81]);
       var tag = tlv.parseAllTags(buf);
       
@@ -474,10 +474,69 @@ describe('TLV', function() {
   });
   
   describe('#encodeTags', function() {
-    it('returns a new buffer containing the encoded form the given array of tags', function() {
+    it('should return a new buffer containing the encoded form the given array of tags', function() {
       var tags = [0x9f70, 0x80, 0xA0, 0x9f807f];
       var buf = tlv.encodeTags(tags);
       buf.should.deep.equal(new Buffer([0x9f, 0x70, 0x80, 0xA0, 0x9f, 0x80, 0x7f]));
+    });
+  });
+  
+  describe('#getUIntValue', function() {
+    it('should return an unsigned big endian integer from a 1 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff]));
+      intTlv.getUIntValue().should.equal(255);
+    });
+    
+    it('should return an unsigned big endian integer from a 2 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff, 0xff]));
+      intTlv.getUIntValue().should.equal(65535);
+    });
+    
+    it('should return an unsigned big endian integer from a 3 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff, 0xff, 0xff]));
+      intTlv.getUIntValue().should.equal(16777215);
+    });
+    
+    it('should return an unsigned big endian integer from a 4 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff, 0xff, 0xff, 0xff]));
+      intTlv.getUIntValue().should.equal(4294967295);
+      
+      intTlv = new TLV(0x80, new Buffer([0xde, 0xad, 0xbe, 0xef]));
+      intTlv.getUIntValue().should.equal(3735928559);
+    });
+  });
+  
+  describe('#getIntValue', function() {
+    it('should return an signed big endian integer from a 1 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff]));
+      intTlv.getIntValue().should.equal(-1);
+      
+      intTlv = new TLV(0x80, new Buffer([0x7f]));
+      intTlv.getIntValue().should.equal(127);
+    });
+    
+    it('should return an signed big endian integer from a 2 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff, 0xff]));
+      intTlv.getIntValue().should.equal(-1);
+      
+      intTlv = new TLV(0x80, new Buffer([0x7f, 0xff]));
+      intTlv.getIntValue().should.equal(32767);
+    });
+    
+    it('should return an signed big endian integer from a 3 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff, 0xff, 0xff]));
+      intTlv.getIntValue().should.equal(-1);
+      
+      intTlv = new TLV(0x80, new Buffer([0x7f, 0xff, 0xff]));
+      intTlv.getIntValue().should.equal(8388607);
+    });
+    
+    it('should return an signed big endian integer from a 4 byte buffer', function() {
+      var intTlv = new TLV(0x80, new Buffer([0xff, 0xff, 0xff, 0xff]));
+      intTlv.getIntValue().should.equal(-1);
+      
+      intTlv = new TLV(0x80, new Buffer([0x5e, 0xad, 0xbe, 0xef]));
+      intTlv.getIntValue().should.equal(1588444911);
     });
   });
 });
