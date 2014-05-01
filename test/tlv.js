@@ -263,6 +263,16 @@ describe('TLV', function() {
       ]);
     });
     
+    it('should return a TLV object when provided a buffer with constructed tag and indefinite length.', function() {
+      var buf = new Buffer([0xe1, 0x80, 0xa0, 0x03, 0x81, 0x01, 0x03, 0x00, 0x00]);
+      var res = tlv.parse(buf);
+      
+      res.tag.should.equal(0xe1);
+      res.constructed.should.equal(true);
+      res.indefiniteLength.should.equal(true);
+      res.originalLength.should.equal(9);
+    });
+    
     it('should throw an exception when provided a buffer with primitive tag and indefinite length.', function() {
       var buf = new Buffer([0xC0, 0x80, 0x81, 0x01, 0x00, 0x00, 0x00]);
       (function(){ tlv.parse(buf); }).should.throw(Error);
@@ -589,4 +599,5 @@ describe('TLV', function() {
       intTlv.value.should.deep.equal(new Buffer([0x7f, 0xff, 0xff, 0xff]));
     });
   });
+  
 });
